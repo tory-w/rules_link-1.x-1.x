@@ -1,3 +1,5 @@
+This is an attempt to port Rules Link from Drupal 7 to Backdrop CMS. Everything below was from the original Rules Link latest Dev release. I am hoping to help on this.
+
 
 --------------------------------------------------------------------------------
                                Rules Links
