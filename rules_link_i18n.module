@@ -78,3 +78,16 @@ function rules_link_i18n_rules_link_update($rules_link) {
 function rules_link_i18n_rules_link_delete($rules_link) {
   i18n_string_object_remove('rules_link', $rules_link);
 }
+
+/**
+ * Implements hook_autoload_info().
+ */
+function rules_link_i18n_autoload_info() {
+  return array(
+    'RulesLinkUIController' => 'rules_link.admin.inc',
+    'RulesLink' => 'rules_link.module',
+    'views_handler_field_rules_link' => 'rules_link.views.inc',
+    'RulesLinkI18nController' => 'rules_link_i18n.module',
+    'RulesLinkI18nStringObjectWrapper' => 'rules_link_i18n.module',
+  );
+}

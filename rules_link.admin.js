@@ -4,7 +4,7 @@
  */
 
 (function($) {
-  Drupal.behaviors.rules_link = {
+  Backdrop.behaviors.rules_link = {
     attach: function(context) {
       $('#edit-entity-type').change(function() {
         $('#edit-settings-vars-items-0-type').val($(this).val());

@@ -1,0 +1,6 @@
+[RulesLinkTestCase]
+name = Rules link tests
+description = Test basic editing and execution of rules links
+group = Rules
+file = rules_link.test
+

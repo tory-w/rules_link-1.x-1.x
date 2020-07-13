@@ -44,7 +44,7 @@ class views_handler_field_rules_link extends views_handler_field_entity {
     // If there are multiple bundle types, we only have to display the links to
     // the entities which have the correct bundle.
     if (empty($rules_link->settings['bundles']) || in_array($bundle, $rules_link->settings['bundles'])) {
-      $output = rules_link_render_link($rules_link, $id, drupal_get_destination(), $parameters);
+      $output = rules_link_render_link($rules_link, $id, backdrop_get_destination(), $parameters);
       if (!empty($output)) {
         $this->options['alter']['make_link'] = TRUE;
         $this->options['alter']['path'] = $output['#href'];

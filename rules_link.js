@@ -4,7 +4,7 @@
  */
 
 (function($) {
-  Drupal.behaviors.rules_link = {
+  Backdrop.behaviors.rules_link = {
     attach: function(context) {
       $('a.rules-link-js').once( function() {
         var message = $('<span class="rules-link-message">Link executed</span>').hide();
@@ -37,7 +37,7 @@
         }
       },
       error: function (xmlhttp) {
-        alert(Drupal.t('An HTTP error '+ xmlhttp.status +' occurred.\n'+ element.href));
+        alert(Backdrop.t('An HTTP error '+ xmlhttp.status +' occurred.\n'+ element.href));
         wrapper.removeClass('rules-link-waiting');
         message.text("Error while executing the rules link.");
         message.show();

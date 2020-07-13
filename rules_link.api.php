@@ -40,9 +40,9 @@ function hook_rules_link_load(array $rules_links) {
 function hook_rules_link_insert(RulesLink $rules_link) {
   db_insert('mytable')
     ->fields(array(
-      'id' => entity_id('rules_link', $rules_link),
-      'extra' => print_r($rules_link, TRUE),
-    ))
+    'id' => entity_id('rules_link', $rules_link),
+    'extra' => print_r($rules_link, TRUE),
+  ))
     ->execute();
 }
 

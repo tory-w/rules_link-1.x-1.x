@@ -8,7 +8,7 @@
 /**
  * Test class for Rules link.
  */
-class RulesLinkTestCase extends DrupalWebTestCase {
+class RulesLinkTestCase extends BackdropWebTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Rules link tests',
@@ -21,15 +21,15 @@ class RulesLinkTestCase extends DrupalWebTestCase {
 
   function setUp() {
     parent::setUp('rules_link', 'rules');
-    $this->admin = $this->drupalCreateUser(array('administer rules links', 'administer permissions', 'administer rules'));
+    $this->admin = $this->backdropCreateUser(array('administer rules links', 'administer permissions', 'administer rules'));
   }
 
   /**
    * Create a link with the given name and the type.
    */
   function createLink($name, $type) {
-    $this->drupalLogin($this->admin);
-    $this->drupalGet('admin/config/workflow/rules_links/add');
+    $this->backdropLogin($this->admin);
+    $this->backdropGet('admin/config/workflow/rules_links/add');
     $this->assertText('Add rules link');
     $data = array(
       'label' => $name,
@@ -43,18 +43,18 @@ class RulesLinkTestCase extends DrupalWebTestCase {
       'entity_link' => TRUE,
     );
 
-    $this->drupalPost('admin/config/workflow/rules_links/add', $data, t('Continue'));
+    $this->backdropPost('admin/config/workflow/rules_links/add', $data, t('Continue'));
     $this->assertText('Your Rules Link has been created along with the required components.');
 
-    $this->drupalGet('admin/people/permissions');
+    $this->backdropGet('admin/people/permissions');
     $this->assertText("$name: Execute rules link", 'Permission was created.');
-    //$this->drupalLogout();
+    //$this->backdropLogout();
 
     // The Simpletest function checkPermissions() saves all permissions into a
     // static array, but rules links generates new permissions, when creating
     // a link. So we have to reset the static cache, so that the
     // checkPermissions function recognizes the new permissions.
-    drupal_static_reset('checkPermissions');
+    backdrop_static_reset('checkPermissions');
   }
 
   /**
@@ -67,16 +67,16 @@ class RulesLinkTestCase extends DrupalWebTestCase {
     $rules_link = rules_link_load($name);
     $set = rules_config_load(rules_link_get_rules_set_name($rules_link));
 
-    $set->rule(rule()->action('drupal_message', array('message' => 'Rules link executed.')));
+    $set->rule(rule()->action('backdrop_message', array('message' => 'Rules link executed.')));
     $set->save();
 
-    $tokenUser = $this->drupalCreateUser(array("access rules link $name", 'administer rules'));
-    $this->drupalLogin($tokenUser);
+    $tokenUser = $this->backdropCreateUser(array("access rules link $name", 'administer rules'));
+    $this->backdropLogin($tokenUser);
 
-    $node = $this->drupalCreateNode(array('title' => 'foo', 'type' => 'article'));
-    $this->drupalGet('node/' . $node->vid);
+    $node = $this->backdropCreateNode(array('title' => 'foo', 'type' => 'article'));
+    $this->backdropGet('node/' . $node->vid);
     $this->clickLink($name);
-    $this->assertText('Rules link executed');//*/
+    $this->assertText('Rules link executed'); //*/
   }
 
   /**
@@ -89,16 +89,16 @@ class RulesLinkTestCase extends DrupalWebTestCase {
     $rules_link = rules_link_load($name);
     $set = rules_config_load(rules_link_get_rules_set_name($rules_link));
 
-    $set->rule(rule()->action('drupal_message', array('message' => 'Rules link executed.')));
+    $set->rule(rule()->action('backdrop_message', array('message' => 'Rules link executed.')));
     $set->save();
 
-    $user2 = $this->drupalCreateUser(array("access rules link $name"));
-    $this->drupalLogin($user2);
-    $node = $this->drupalCreateNode(array('title' => 'foo', 'type' => 'article'));
-    $this->drupalGet('node/' . $node->vid);
+    $user2 = $this->backdropCreateUser(array("access rules link $name"));
+    $this->backdropLogin($user2);
+    $node = $this->backdropCreateNode(array('title' => 'foo', 'type' => 'article'));
+    $this->backdropGet('node/' . $node->vid);
     $this->clickLink($name);
-    $this->drupalPost('test_rules_link/1', array(), t('Confirm'));
+    $this->backdropPost('test_rules_link/1', array(), t('Confirm'));
     $this->assertText('Rules link executed.', 'Confirm form was generated and rules link was executed.');
-    $this->drupalLogout();
+    $this->backdropLogout();
   }
 }

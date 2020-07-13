@@ -21,13 +21,13 @@ class RulesLinkUIController extends EntityDefaultUIController {
     $items[$this->path]['description'] = 'Manage links that trigger rules.';
     $items[$this->path . '/manage/' . $wildcard . '/components'] = array(
       'title' => t('Configure rules'),
-      'page callback' => 'drupal_get_form',
+      'page callback' => 'backdrop_get_form',
       'page arguments' => array('rules_link_component_form', $this->entityType, $id_count + 1),
       'load arguments' => array($this->entityType),
       'access callback' => 'entity_access',
       'access arguments' => array('update', $this->entityType, $id_count + 1),
       'file' => 'rules_link.admin.inc',
-      'file path' => drupal_get_path('module', 'rules_link'),
+      'file path' => backdrop_get_path('module', 'rules_link'),
       'type' => MENU_LOCAL_TASK,
       'weight' => 2,
     );
@@ -81,7 +81,7 @@ class RulesLinkUIController extends EntityDefaultUIController {
  * Generates the rules link editing form.
  */
 function rules_link_form($form, &$form_state, $rules_link, $op = 'edit') {
-  drupal_add_css(drupal_get_path('module', 'rules_link') . '/rules_link.css', 'file');
+  backdrop_add_css(backdrop_get_path('module', 'rules_link') . '/rules_link.css', 'file');
 
   if ($op == 'clone') {
     $rules_link->label .= ' (cloned)';
@@ -205,18 +205,18 @@ function rules_link_form($form, &$form_state, $rules_link, $op = 'edit') {
     $form['bundle_wrapper']['view_mode']['#value'] = array();
   }
 
-  $html_id_show_all= drupal_html_id('rules-link-show-all-wrapper');
+  $html_id_show_all = backdrop_html_id('rules-link-show-all-wrapper');
 
   // Button for users without js.
   $form['show_all'] = array(
     '#type' => 'button',
     '#value' => t('Show All'),
     '#prefix' => "<div id='$html_id_show_all'>",
-    '#suffix' => '</div>'
+    '#suffix' => '</div>',
   );
 
   // Hide the button for users with javascript.
-  drupal_add_js('(function ($) { $("#' . $html_id_show_all . '").hide() }(jQuery));',
+  backdrop_add_js('(function ($) { $("#' . $html_id_show_all . '").hide() }(jQuery));',
     array('type' => 'inline', 'scope' => 'footer')
   );
 
@@ -236,7 +236,11 @@ function rules_link_form($form, &$form_state, $rules_link, $op = 'edit') {
     '#type' => 'radios',
     '#title' => t('Link type'),
     '#default_value' => isset($rules_link->settings['link_type']) ? $rules_link->settings['link_type'] : 'token',
-    '#options' => array('javascript' => t('Javascript'), 'token' => t('Normal'), 'confirm' => t('Confirmation')),
+    '#options' => array(
+      'javascript' => t('Javascript'),
+      'token' => t('Normal'),
+      'confirm' => t('Confirmation'),
+    ),
   );
 
   $form['confirm']['confirm_question'] = array(
@@ -262,7 +266,6 @@ function rules_link_form($form, &$form_state, $rules_link, $op = 'edit') {
         'input[name="link_type"]' => array('value' => 'confirm'),
       ),
     ),
-
   );
   $form['confirm']['question'] = array(
     '#type' => 'textfield',
@@ -305,7 +308,7 @@ function rules_link_form($form, &$form_state, $rules_link, $op = 'edit') {
 
     // Add JS file that sets the correct type, label and machine name for the
     // selected entity type.
-    drupal_add_js(drupal_get_path('module', 'rules_link') . '/rules_link.admin.js', 'file');
+    backdrop_add_js(backdrop_get_path('module', 'rules_link') . '/rules_link.admin.js', 'file');
     $form['variables']['settings']['vars']['items'][0]['type']['#default_value'] = 'node';
     $form['variables']['settings']['vars']['items'][0]['type']['#disabled'] = TRUE;
     //$form['variables']['settings']['vars']['items'][0]['type']
@@ -371,7 +374,7 @@ function rules_link_form_validate(&$form, &$form_state) {
   $path = empty($rules_link->path) ? $rules_link->name : $rules_link->path;
 
   $menu_item = menu_get_item($path);
-  $lookup_path = drupal_lookup_path('source', $path);
+  $lookup_path = backdrop_lookup_path('source', $path);
 
   if (!empty($menu_item) || !empty($lookup_path)) {
     form_error($form['path'], t('The path "%path" is already in use. This system cannot override existing paths. Please select a different name or enter a different path.', array('%path' => $path)));
@@ -381,9 +384,9 @@ function rules_link_form_validate(&$form, &$form_state) {
     if ($link->path == $path && $link->name != $rules_link->name) {
       form_error($form['path'], t('The path "%path" is taken by the rules link "%link". This system cannot override existing paths.',
         array(
-          '%path' => $path,
-          '%link' => $link->name,
-        )
+        '%path' => $path,
+        '%link' => $link->name,
+      )
       ));
     }
   }
@@ -427,10 +430,10 @@ function rules_link_form_submit(&$form, &$form_state) {
     $rule_set->label = 'Rules link: ' . $rules_link->label . ' rules set';
     $rule_set->save(rules_link_get_rules_set_name($rules_link), 'rules_link');
 
-    drupal_set_message(t('Your Rules Link has been created along with the required components. Please remember to set <a href="!url">%link</a> for your link and to add actions to your reactions rule.', array('%link' => t('the permissions'), '!url' => url('admin/people/permissions', array('fragment' => 'module-rules_link')))));
+    backdrop_set_message(t('Your Rules Link has been created along with the required components. Please remember to set <a href="!url">%link</a> for your link and to add actions to your reactions rule.', array('%link' => t('the permissions'), '!url' => url('admin/people/permissions', array('fragment' => 'module-rules_link')))));
   }
   else {
-    drupal_set_message(t('Your Rules Link has been saved.'));
+    backdrop_set_message(t('Your Rules Link has been saved.'));
   }
 
   // Save and go back.
@@ -495,6 +498,10 @@ function rules_link_component_form($form, &$form_state, $entity_type, $rules_lin
   return $form;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function rules_link_component_form_validate(&$form, &$form_state) {
   $form_state['rules_link_condition_set']->form_validate($form['condition_set'], $form_state);
   $form_state['rules_link_rules_set']->form_validate($form['rule_set'], $form_state);
@@ -542,5 +549,5 @@ function rules_link_component_form_submit(&$form, &$form_state) {
     $form_state['rules_link']->save();
   }
 
-  drupal_set_message(t('Your Rules Link components has been saved.'));
+  backdrop_set_message(t('Your Rules Link components has been saved.'));
 }
